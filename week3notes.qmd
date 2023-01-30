@@ -1,0 +1,219 @@
+---
+title: "Week 3 Notes"
+format: html
+--- 
+
+# January 24th
+
+#### 'read.csv' for reading datasets
+
+    Name, Age, Height
+    Alice, 21, 5.5
+    Bob, 25, 6.2
+    Charlie, 35, 5.9
+
+```{r}
+library(tidyverse)
+renv::restore()
+library(dplyr)
+library(knitr)
+
+# csv is file where data is separated by commas
+
+data_hard_code <- data.frame(
+  Name = c("Alice", "Bob", "charlie"),
+  Age = c(21,25,35),
+  Height = c(5.5,6.2,5.9)
+)
+
+data_hard_code %>%
+  knitr::kable()
+```
+
+
+#### dplyr
+
+-   Facilitates EDA
+-   Objective of dplyr is to provide a set of verbs for manipulating data
+
+```{r}
+library(ggplot2)
+head(mpg,10) %>% 
+  knitr::kable()
+```
+
+```{r}
+head(iris,10) %>%
+  knitr::kable()
+```
+
+###### What makes a dataset clean??
+
+-   Get rid of NULL, NA, NaN, missing entries
+-   Making sure all the values for a particular variable are of the same type (same data type/expressed in same way)
+-   Each case should be a different value
+
+###### What we want
+
+-   every variable should have its own column (a variable is something which holds 'measurements')
+-   every observation should have its own row
+-   every cell should have a unique value
+
+###### Examples of dplyr verbs
+
+1.  Select (selects a subset of the columns)
+
+```{r}
+mpg %>%
+  select(c(model,displ, class)) %>%
+  knitr::kable()
+```
+
+2.  Mutate (creates new columns from existing ones)
+
+```{r}
+iris %>%
+  mutate(sepal_area = Sepal.Length * Sepal.Width) %>%
+  knitr::kable()
+```
+
+3.  Filter
+
+```{r}
+head(mpg,10) %>%
+  filter(class == "compact") %>%
+  head(., 10) %>%
+  knitr::kable()
+```
+
+4.  Summary, pivot_wider, pivot_longer, left.join, right.join, full.join, inner.join
+
+#### ggplot2
+
+-   Facilitates EDA
+-   gg stands for grammar of graphics
+
+```{r}
+# start off by declaring ggplot object
+plot <- ggplot(iris)
+
+
+# adding points & coloring by species
+plot <- plot +
+  geom_point(aes(x = Petal.Length, y = Sepal.Length, color = Species)) 
+```
+
+```{r}
+# adding trend line
+plot <- plot+
+  geom_point(aes(x = Petal.Length, y = Sepal.Length, color = Species)) + 
+  geom_smooth(aes(x = Petal.Length, y = Sepal.Length))
+```
+
+```{r}
+# for linear trend line
+plot <- plot+
+  geom_point(aes(x = Petal.Length, y = Sepal.Length, color = Species)) + 
+  geom_smooth(aes(x = Petal.Length, y = Sepal.Length), method = lm)
+
+plot
+```
+
+#### ggPlotThemes
+
+
+
+# January 26th
+
+#### ggplot
+* aes(x = __, y = ___, color = ___)
+* geom_point
+* geom_smooth (**method =  lm) for linear model
+
+
+#### ggThemeAssist
+
+* only need to provide general skeleton for the model you want to create
+* the other details are provided
+* install.packages("ggThemeAssist")
+* highlight code, go to addins and click ggthemeassist
+```{r}
+install.packages("ggThemeAssist")
+
+graph <- iris %>%
+  ggplot() +
+  geom_point(aes(x = Petal.Length, y = Sepal.Length, color = Species))  + theme(plot.background = element_rect(fill = "white")) +labs(title = "Graph of Petal Length vs Sepal Length",
+    x = "Petal Length", y = "Sepal Length")
+```
+
+
+#### Packages from tidyverse
+
+###### purrr
+* provides set of functional programming tools
+1. take a number 'i'
+2. create a matrix with random entries of dimension 'i' $\times$ 'i'
+3. compute the average of the elements of the matrix
+4. print it
+
+```{r}
+# Option 1
+results = c()
+for (i in 1:10) {
+	M <- matrix(
+		runif(i*i), nrow = i
+		)
+	results[i] <- mean(M)
+}
+results
+
+
+# Option 2
+map(
+	1:10,
+	function(i){
+		mean(
+			matrix(
+				runif(i*i), nrow = i
+				)
+			)
+	}
+)
+```
+
+
+###### readr
+* file input, output
+* reading in csvs
+
+
+###### forcats
+* use factors in RStudio
+
+
+
+#### more on data types
+1. Character/string, e.g. "this is a character" 
+2. Integers, e.g. '[1,2,3]'
+3. Double, e.g. '[2.2, 3.14159, 0.9]' --> anything thats a real number
+4. Booleans, e.g. 'TRUE/FALSE'
+
+
+
+#### categorical variables
+* what country you are from (people from one country have all same value, and is different from one of another country)
+* zip codes
+* categorical variables don't have a sense of continuity
+
+###### factors
+* categorical variables
+```{r}
+var <- c("USA","USA","USA","CAN","CAN","MEX","MEX","MEX")
+as.factor(var)	
+# this makes sure we are looking at set of factors, not strings
+# gives you the levels --> Levels: CAN, MEX, USA
+
+var2 <- mpg$manufacturer
+as.factor(var2)
+fct_reorder(var2, mpg$hwy, .desc = FALSE)
+```
