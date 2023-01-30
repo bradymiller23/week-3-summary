@@ -4,8 +4,8 @@ author: "Brady Miller"
 title-block-banner: true
 title-block-style: default
 toc: true
-format: html
-# format: pdf
+# format: html
+format: pdf
 ---
 
 ------------------------------------------------------------------------
@@ -129,7 +129,7 @@ for (i in 1:5) {
 }
 results
 
-# map() -> applies a function to each element of the matrix and returns the output as a list
+# map() -> applies function to each element of matrix and returns output as a list
 map(
 	1:5,
 	function(i){
