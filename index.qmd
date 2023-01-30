@@ -24,15 +24,13 @@ Today, I learnt the following concepts in class:
 3.  Learned about ggplot, some of its geoms and how to create plots using its aesthetics.
 :::
 
-Provide more concrete details here. 
 
 ```{R results='hide'}
 library(tidyverse)
 library(knitr)
 ```
 
-For example: in class we learned how to hard code in a data frame and that the
-             kable function can help 'clean up' tables (make them look better)
+#### In class we learned how to hard code in a data frame and that the kable function can help 'clean up' tables (make them look better)
 
 ```{r}
 data_hard_code <- data.frame(
@@ -47,30 +45,29 @@ data_hard_code %>%
 # data <- read.csv("file path.csv") is used to read in a csv file
 ```
 
-Some of the dplyr verbs that we learned about and some examples of using them 
-are below
+#### Some of the dplyr verbs that we learned about and some examples of using them are below
 
 ```{r}
-mpg
 # Select
-mpg %>%
+head(mpg,10) %>%
   select(c(model,drv, cty)) %>%
   knitr::kable()
 
 # Mutate
 iris %>%
   mutate(sepal_area = Sepal.Length * Sepal.Width) %>%
+  head(10) %>%
   knitr::kable()
 
 # Filter
 head(mpg,10) %>%
-  filter(hwy > 28) %>%
+  filter(hwy > 26) %>%
   head(., 10) %>%
   knitr::kable()
 ```
 
 
-Learned how to use ggplot with some basic geoms and aesthetics
+#### Learned how to use ggplot with some basic geoms and aesthetics
 ```{r}
 # creates scatterplot of city miles/gallon vs hwy miles/gallon 
 # color encodes each point by its manufacturer
@@ -92,19 +89,71 @@ Include a *very brief* summary of what you learnt in this class here.
 
 Today, I learnt the following concepts in class:
 
-1.  Item 1
-2.  Item 2
-3.  Item 3
+1.  How to use ggThemeAssist
+2.  Some of the packages from the tidyverse library and what they can do
+3.  Discussed categorical variables/factors and how we can factor variables
 :::
 
-Provide more concrete details here, e.g.,
 
-In class we learnt how to use the `map` function to create multiple regression diagnostic plots
+#### Using ggThemeAssist, you can highlight the code below and add in all the extra theme features seen in the next code chunk
+```{r}
+library(ggThemeAssist)
+graph <- mpg %>%
+  ggplot() + 
+  geom_point(aes(x = cty, y = hwy, color = class))
+```
 
-```{R results='hide', fig.height=4}
-par(mfcol=c(2, 3), mar=c(3.5, 3.5, 2, 1), mgp=c(2.4, 0.8, 0))
-mtcars %>%
-  split(.$cyl) %>%
-  map(~ lm(mpg ~ wt, data = .x)) %>%
-  map(function(x)plot(x, which=c(1, 2)))
+```{r}
+graph <- mpg %>%
+  ggplot() + 
+  geom_point(aes(x = cty, y = hwy, color = class)) + theme(plot.title = element_text(face = "bold"),
+    panel.background = element_rect(linetype = "dashed"),
+    plot.background = element_rect(fill = "white",
+        linetype = "dashed")) +labs(title = "City mpg vs Highway mpg",
+    x = "City mpg", y = "Highway mpg")
+```
+
+
+#### Some packages in tidyverse that we discussed were purrr, forcats and readr
+
+Purrr provides lots of functional programming tools
+```{r}
+# creating an ixi matrix and computes the average of the elements 
+
+results = c()
+for (i in 1:5) {
+	M <- matrix(
+		runif(i*i), nrow = i
+		)
+	results[i] <- mean(M)
+}
+results
+
+# map() -> applies a function to each element of the matrix and returns the output as a list
+map(
+	1:5,
+	function(i){
+		mean(
+			matrix(
+				runif(i*i), nrow = i
+				)
+			)
+	}
+)
+```
+
+
+#### Categorical Variables/Factors
+
+We learned that by using as.factor(), we can break down a column containing categorical variables into its levels
+
+```{r}
+var <- mpg$manufacturer
+as.factor(var)
+```
+
+Can use fct_reorder(), to reorder the values of a given categorical variable based on another variable. 
+```{r}
+# reorganizes the manufacturer levels based on hwy mpg in ascending order
+fct_reorder(var, mpg$hwy, .desc = FALSE)
 ```
