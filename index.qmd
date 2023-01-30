@@ -1,6 +1,6 @@
 ---
 title: "Weekly Summary Template"
-author: "Author Name"
+author: "Brady Miller"
 title-block-banner: true
 title-block-style: default
 toc: true
@@ -8,59 +8,96 @@ format: html
 # format: pdf
 ---
 
----
+------------------------------------------------------------------------
 
-## Tuesday, Jan 17
+## Tuesday, Jan 24
 
-::: {.callout-important}
+::: callout-important
 ## TIL
 
-Include a _very brief_ summary of what you learnt in this class here. 
+Include a *very brief* summary of what you learnt in this class here.
 
 Today, I learnt the following concepts in class:
 
-1. Item 1
-1. Item 2
-1. Item 3
+1.  How to read in csv's through functions such as read.csv, read.table or read.delim & also how to hard code a data frame
+2.  Learned about what dplyr is and some of its verbs and their functions 
+3.  Learned about ggplot, some of its geoms and how to create plots using its aesthetics.
 :::
 
-Provide more concrete details here. You can also use footenotes[^footnote] if you like
+Provide more concrete details here. 
 
 ```{R results='hide'}
-#| output: false
-library(dplyr)
-library(purrr)
+library(tidyverse)
+library(knitr)
+```
+
+For example: in class we learned how to hard code in a data frame and that the
+             kable function can help 'clean up' tables (make them look better)
+
+```{r}
+data_hard_code <- data.frame(
+  Name = c("Jake", "Ryan", "Emma"),
+  Age = c(25,44,31),
+  Height = c(5.10,6.1,5.5)
+)
+
+data_hard_code %>%
+  knitr::kable()
+
+# data <- read.csv("file path.csv") is used to read in a csv file
+```
+
+Some of the dplyr verbs that we learned about and some examples of using them 
+are below
+
+```{r}
+mpg
+# Select
+mpg %>%
+  select(c(model,drv, cty)) %>%
+  knitr::kable()
+
+# Mutate
+iris %>%
+  mutate(sepal_area = Sepal.Length * Sepal.Width) %>%
+  knitr::kable()
+
+# Filter
+head(mpg,10) %>%
+  filter(hwy > 28) %>%
+  head(., 10) %>%
+  knitr::kable()
 ```
 
 
-For example: 
-in class we learnt we learnt about the `map` function from the `purrr` package. 
-
-
-```{R results='hide', fig.width=7, fig.height=7}
-par(mfrow=c(3, 3), mar=c(3.5, 3.5, 2, 1), mgp=c(2.4, 0.8, 0))
-map(1:9, function(i)rnorm(1000) %>% hist(., main=i, col=i))
+Learned how to use ggplot with some basic geoms and aesthetics
+```{r}
+# creates scatterplot of city miles/gallon vs hwy miles/gallon 
+# color encodes each point by its manufacturer
+# adds a trend line between the city and highway mpg
+plot <- ggplot(mpg)
+plot <- plot +
+  geom_point(aes(x = cty, y = hwy, color = manufacturer)) + 
+  geom_smooth(aes(x = cty, y = hwy))
+plot
 ```
 
 
+## Thursday, Jan 26
 
-## Thursday, Jan 19
-
-
-
-::: {.callout-important}
+::: callout-important
 ## TIL
 
-Include a _very brief_ summary of what you learnt in this class here. 
+Include a *very brief* summary of what you learnt in this class here.
 
 Today, I learnt the following concepts in class:
 
-1. Item 1
-1. Item 2
-1. Item 3
+1.  Item 1
+2.  Item 2
+3.  Item 3
 :::
 
-Provide more concrete details here, e.g., 
+Provide more concrete details here, e.g.,
 
 In class we learnt how to use the `map` function to create multiple regression diagnostic plots
 
@@ -71,6 +108,3 @@ mtcars %>%
   map(~ lm(mpg ~ wt, data = .x)) %>%
   map(function(x)plot(x, which=c(1, 2)))
 ```
-
-
-[^footnote]: You can include some footnotes here
